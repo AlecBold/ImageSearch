@@ -4,6 +4,7 @@ import re
 import os
 import io
 import cgi
+import base64
 import mimetypes
 
 from model import PredictModel, get_names_of_images
@@ -40,7 +41,12 @@ class Handler(BaseHTTPRequestHandler):
         </head>
         <body>
             <h1>Similar Images</h1>
-            <ul>
+            <hr>
+            <ul class="images-list">
+                <li>
+                    <img src="%(source_image)s" />
+                    <span>source image \n distance: 0</span>
+                </li>
                 %(images)s
             </ul>
         </body>
@@ -96,16 +102,19 @@ class Handler(BaseHTTPRequestHandler):
 
             image = form['image']
             image_data = image.file.read()
-
-            # function to find similar will be there
-            sim_images, distances = self.predict_model.search_nearest(self.search_entities, image_data)
-            similar_images = '\n'.join(map(
-                lambda img, dist: f'<li><img src="/media/images/{img}"/><div>distance:{dist}</div></li>',
-                sim_images, distances
-            ))
+            image_mime, _ = mimetypes.guess_type(image.filename)
+            image_base64 = str(base64.b64encode(image_data), 'utf-8')
+            similar_images, distances = self.predict_model.search_nearest(self.search_entities, image_data)
 
             content = ( self.SIMILAR_IMAGES_TEMPLATE %  
-                        {'images': similar_images})
+                {
+                    'images': '\n'.join(map(
+                        lambda img, dist: f'<li><img src="/media/images/{img}"/><div>distance:{dist}</div></li>',
+                        similar_images, distances
+                    )), 
+                    'source_image': f'data:{image_mime};charset=utf-8;base64, {image_base64}'
+                }
+            )
 
             body = content.encode('UTF-8', 'replace')
             self.__set_headers('text/html;charset=utf-8', int(len(body)))
