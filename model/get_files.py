@@ -1,12 +1,12 @@
 #! /usr/bin/python3
 
 from os import listdir
-from os.path import isfile, join, curdir
+from os.path import isfile, join, curdir , abspath
 import numpy as np
 import json
 
-path_data_images = f'{curdir}/media/images'
-path_to_json_file = f'{curdir}/json_file/vectors_and_file_names.json'
+path_data_images = abspath('media/images')
+path_to_json_file = abspath('json_file/vectors_and_file_names.json')
 
 
 def get_names_of_images():

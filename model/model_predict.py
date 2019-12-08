@@ -10,10 +10,6 @@ from .get_files import *
 
 class PredictModel:
 
-    def __init__(self):
-        self.vgg19_init()
-        self.knn_init()
-
     def vgg19_init(self):
         from keras.applications import VGG19
         self.bm = VGG19(weights='imagenet')
@@ -55,6 +51,9 @@ class PredictModel:
         return get_predicted_vectors_from_json()
 
     def search_nearest(self, arr_data_names, input_binary_file):
+        # Initialize models
+        self.vgg19_init()
+        self.knn_init()
         # Get vectors of images
         input_vector = self.prep_input_file(input_binary_file)
         files_names, database_vectors = self.get_files_names_and_vectors(arr_data_names)
@@ -63,10 +62,8 @@ class PredictModel:
         # Search similar images
         dist, indices = self.knn.kneighbors(input_vector, n_neighbors=10)
         names_similar_images, dists = zip(*[(files_names[indices[0][i]], dist[0][i]) for i in range(len(indices[0]))])
-        # Get path similar images
-        path_names_similar_images = get_path_images(names_similar_images)
         # End model session
         K.clear_session()
-        return path_names_similar_images, dists
+        return names_similar_images, dists
 
 

@@ -6,7 +6,7 @@ import io
 import cgi
 import mimetypes
 
-from .model import PredictModel, get_names_of_images
+from model import PredictModel, get_names_of_images
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 IP = 'localhost'
@@ -15,7 +15,7 @@ SERVER_ADDRESS = (IP, PORT_NUMBER)
 
 class Handler(BaseHTTPRequestHandler):
     def __init__(self, *args, directory=None, **kwargs):
-        self.predict_model = PredictModel().__init__()
+        self.predict_model = PredictModel()
         self.search_entities = get_names_of_images()
         super().__init__(*args, **kwargs)
 
@@ -98,10 +98,10 @@ class Handler(BaseHTTPRequestHandler):
             image_data = image.file.read()
 
             # function to find similar will be there
-
+            sim_images, distances = self.predict_model.search_nearest(self.search_entities, image_data)
             similar_images = '\n'.join(map(
-                lambda image: f'<li>path :{image[0]}, distance: {image[1]}</li>',
-                self.predict_model.search_nearest(self.search_entities, image_data)
+                lambda img, dist: f'<li><img src="/media/images/{img}"/><div>distance:{dist}</div></li>',
+                sim_images, distances
             ))
 
             content = ( self.SIMILAR_IMAGES_TEMPLATE %  
