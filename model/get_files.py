@@ -5,8 +5,8 @@ from os.path import isfile, join, abspath
 import numpy as np
 import json
 
-path_data_images = abspath('media/images')
-path_to_json_file = abspath('json_file/vectors_and_file_names.json')
+path_data_images = 'media/images'
+path_to_json_file = 'json_file/vectors_and_file_names.json'
 
 
 def get_names_of_images():
