@@ -1,7 +1,7 @@
 #! /usr/bin/python3
 
 from os import listdir
-from os.path import isfile, join, curdir , abspath
+from os.path import isfile, join, abspath
 import numpy as np
 import json
 
