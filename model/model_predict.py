@@ -2,8 +2,10 @@ from keras.applications.vgg19 import preprocess_input
 from keras.preprocessing import image
 from keras.engine import Model
 from keras import backend as K
+
 import io
 from PIL import Image
+
 from .get_files import *
 
 
@@ -11,6 +13,7 @@ class PredictModel:
     def __init__(self):
         self.vgg19_init()
         self.knn_init()
+
 
     def vgg19_init(self):
         from keras.applications import VGG19
