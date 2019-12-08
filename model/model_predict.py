@@ -1,6 +1,4 @@
-# Model Predict Files
-
-# Importing Libraries
+#! /usr/bin/python3
 from keras.applications.vgg19 import preprocess_input
 from keras.preprocessing import image
 from keras.engine import Model
