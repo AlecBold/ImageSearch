@@ -1,22 +1,22 @@
 #! /usr/bin/python3
+from keras.applications import VGG19
 from keras.applications.vgg19 import preprocess_input
 from keras.preprocessing import image
 from keras.engine import Model
 from keras import backend as K
 import io
 from PIL import Image
+from sklearn.neighbors import NearestNeighbors
 from .get_files import *
 
 
 class PredictModel:
 
     def vgg19_init(self):
-        from keras.applications import VGG19
         self.bm = VGG19(weights='imagenet')
         self.model = Model(inputs=self.bm.input, outputs=self.bm.get_layer('fc1').output)
 
     def knn_init(self):
-        from sklearn.neighbors import NearestNeighbors
         self.knn = NearestNeighbors(metric='cosine', algorithm='brute')
 
     def prep_database_files(self, arr_data_names):
