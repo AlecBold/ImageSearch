@@ -1,25 +1,23 @@
 #! /usr/bin/python3
-
 from keras.applications.vgg19 import preprocess_input
 from keras.preprocessing import image
 from keras.engine import Model
 from keras import backend as K
-
 import io
 from PIL import Image
-
 from .get_files import *
 
 
 class PredictModel:
+
     def __init__(self):
         self.vgg19_init()
         self.knn_init()
 
     def vgg19_init(self):
         from keras.applications import VGG19
-        bm = VGG19(weights='imagenet')
-        self.model = Model(inputs=bm.input, outputs=bm.get_layer('fc1').output)
+        self.bm = VGG19(weights='imagenet')
+        self.model = Model(inputs=self.bm.input, outputs=self.bm.get_layer('fc1').output)
 
     def knn_init(self):
         from sklearn.neighbors import NearestNeighbors
@@ -65,8 +63,10 @@ class PredictModel:
         # Search similar images
         dist, indices = self.knn.kneighbors(input_vector, n_neighbors=10)
         names_similar_images, dists = zip(*[(files_names[indices[0][i]], dist[0][i]) for i in range(len(indices[0]))])
+        # Get path similar images
+        path_names_similar_images = get_path_images(names_similar_images)
         # End model session
         K.clear_session()
-        return names_similar_images, dists
+        return path_names_similar_images, dists
 
 

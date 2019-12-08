@@ -1,0 +1,4 @@
+Keras==2.2.4
+numpy==1.17.4
+Pillow==6.2.1
+scikit_learn==0.22
