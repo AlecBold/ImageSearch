@@ -6,12 +6,19 @@ import io
 import cgi
 import base64
 import mimetypes
+from socket import gethostbyname, gethostname
 
 from model import PredictModel, get_names_of_images
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
-IP = 'localhost'
-PORT_NUMBER = 3000
+# For local run
+# IP = 'localhost'
+# PORT_NUMBER = 3000
+
+# For server run
+IP = gethostbyname(gethostname())
+PORT_NUMBER = int(os.environ["PORT"])
+
 SERVER_ADDRESS = (IP, PORT_NUMBER)
 
 class Handler(BaseHTTPRequestHandler):
