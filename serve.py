@@ -31,7 +31,7 @@ class Handler(BaseHTTPRequestHandler):
         '/style.css': 'client/style.css',
     }
 
-    MEDIA_PATH = r'\/media\/(\w)+\/(\w)+\.(png|jpg|jpeg)$'
+    MEDIA_PATH = r'\/media\/(\w)+\/(\w|[А-Яа-я])+\.(png|jpg|jpeg)$'
 
     SIMILAR_IMAGES_TEMPLATE = '''\
         <!DOCTYPE html>
