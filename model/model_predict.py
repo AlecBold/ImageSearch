@@ -6,6 +6,7 @@ from keras.engine import Model
 from keras import backend as K
 import io
 from PIL import Image
+
 from sklearn.neighbors import NearestNeighbors
 from .get_files import *
 
