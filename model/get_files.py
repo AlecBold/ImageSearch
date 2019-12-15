@@ -5,7 +5,9 @@ from os.path import isfile, join, abspath
 import numpy as np
 import json
 
-path_data_images = abspath(f"media/{listdir(abspath('media'))[0]}")
+
+new_folder = listdir(abspath('media'))[0]
+path_data_images = abspath(f"media/{new_folder}")
 path_to_json_file = abspath('json_file/vectors_and_file_names.json')
 
 

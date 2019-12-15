@@ -7,8 +7,10 @@ import base64
 import mimetypes
 from socket import gethostbyname, gethostname
 
-from model import PredictModel, get_names_of_images
+
+from model import PredictModel, get_names_of_images, new_folder
 from http.server import HTTPServer, BaseHTTPRequestHandler
+
 
 
 IP = 'localhost'
@@ -29,7 +31,7 @@ class Handler(BaseHTTPRequestHandler):
         '/style.css': 'client/style.css',
     }
 
-    MEDIA_PATH = r'\/media\/images\/(\w|\d)+\.(png|jpg|jpeg)$'
+    MEDIA_PATH = r'\/media\/(\w)+\/(\w)+\.(png|jpg|jpeg)$'
 
     SIMILAR_IMAGES_TEMPLATE = '''\
         <!DOCTYPE html>
@@ -40,7 +42,7 @@ class Handler(BaseHTTPRequestHandler):
             <meta http-equiv="X-UA-Compatible" content="ie=edge">
             <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,500&display=swap" rel="stylesheet">
             <link rel="stylesheet" href="./style.css">
-            <title>HotDog</title>
+            <title>ImgRec</title>
         </head>
         <body>
             <h1>Similar Images</h1>
@@ -71,12 +73,12 @@ class Handler(BaseHTTPRequestHandler):
         if re.match(self.MEDIA_PATH, self.path):
             return file_path + self.path
 
-        return None 
+        return None
 
     def do_GET(self):
         file_path = self.__resolve_get_path()
 
-        if not(file_path):
+        if not file_path:
             self.send_error(404, f'File Not Found: {self.path}')
             return
 
@@ -85,13 +87,12 @@ class Handler(BaseHTTPRequestHandler):
 
             with open(file_path, 'rb') as file_binary:
                 file = file_binary.read() 
-                self.__set_headers(content_type, int(len(file)))
+                self.__set_headers(content_type, len(file))
                 self.wfile.write(file)
 
         except IOError:
             self.send_error(404, f'File Not Found: {self.path}')
 
-            
     def do_POST(self):
         if self.path == '/similar':
             form = cgi.FieldStorage(
@@ -112,7 +113,7 @@ class Handler(BaseHTTPRequestHandler):
             content = ( self.SIMILAR_IMAGES_TEMPLATE %  
                 {
                     'images': '\n'.join(map(
-                        lambda img, dist: f'<li><img src="/media/images/{img}"/><div>distance:{dist}</div></li>',
+                        lambda img, dist: f'''<li><img src="media/{new_folder}/{img}" /><div>distance:{dist}</div></li>''',
                         similar_images, distances
                     )), 
                     'source_image': f'data:{image_mime};charset=utf-8;base64, {image_base64}'
@@ -120,13 +121,14 @@ class Handler(BaseHTTPRequestHandler):
             )
 
             body = content.encode('UTF-8', 'replace')
-            self.__set_headers('text/html;charset=utf-8', int(len(body)))
+            self.__set_headers('text/html;charset=utf-8', len(body))
 
             self.wfile.write(body)
 
+
 try:
     server = HTTPServer(SERVER_ADDRESS, Handler)
-    print('Started httpserver on port ', PORT_NUMBER)
+    print('Started httpserver on address ', SERVER_ADDRESS)
 
     server.serve_forever()
 
