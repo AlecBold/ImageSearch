@@ -5,17 +5,17 @@ import os
 import cgi
 import base64
 import mimetypes
-from socket import gethostbyname, gethostname, AF_INET, SOCK_STREAM, socket, SocketType
+from socket import gethostbyname, gethostname
+
 
 from model import PredictModel, get_names_of_images, new_folder
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-BOT_TOKEN = '1048943696:AAGfcNmCB78xCBe4p7khVN-jHLM6QM4-cyc'
-URL = f"https://api.telegram.org/bot{BOT_TOKEN}/"
 
 IP = 'localhost'
-PORT_NUMBER = 8000
+PORT_NUMBER = 3000
+
 SERVER_ADDRESS = (IP, PORT_NUMBER)
 
 
@@ -109,6 +109,7 @@ class Handler(BaseHTTPRequestHandler):
             image_mime, _ = mimetypes.guess_type(image.filename)
             image_base64 = str(base64.b64encode(image_data), 'utf-8')
             similar_images, distances = self.predict_model.search_nearest(self.search_entities, image_data)
+
             content = ( self.SIMILAR_IMAGES_TEMPLATE %  
                 {
                     'images': '\n'.join(map(

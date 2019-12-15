@@ -22,6 +22,26 @@ body {
     flex-direction: column;
 }
 
+.images-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.images-list li {
+    margin: 5px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.images-list li img {
+    max-width: 200px;
+    height: auto;
+}
+
 form {
     width: 100%;
     display: flex;
